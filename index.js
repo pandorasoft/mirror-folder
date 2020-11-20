@@ -19,8 +19,8 @@ function mirror (src, dst, opts, cb) {
     progress.on('end', cb)
   }
 
-  src = parse(src)
-  dst = parse(dst)
+  src = parse(src,'src')
+  dst = parse(dst,'dst')
 
   var stopped = false
   var waiting = true
@@ -317,9 +317,12 @@ function mirror (src, dst, opts, cb) {
   }
 }
 
-function parse (name) {
+function parse (name,type = '') {
   if (typeof name === 'string') return {name: path.resolve(name), fs: fs}
-  name.name = path.resolve(name.name)
+  if(name.name === '/' && type === 'dst'){
+  }else{
+    name.name = path.resolve(name.name)
+  }
   if (!name.fs) name.fs = fs
   return name
 }

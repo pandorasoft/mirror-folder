@@ -42,7 +42,9 @@ function mirror (src, dst, opts, cb) {
   }
 
   function update (name, live) {
+    // console.log(name, name.slice(src.name.length),src.name === name);
     var item = {name: name.slice(src.name.length) || path.sep, live: live}
+    // console.log(name,src.name,name==src.name);
     if (name === src.name) item = {name: '', live: live} // allow single file src (not '/')
 
     pending.push(item)
@@ -319,7 +321,7 @@ function mirror (src, dst, opts, cb) {
 
 function parse (name,type = '') {
   if (typeof name === 'string') return {name: path.resolve(name), fs: fs}
-  if(name.name === '/'){
+  if(name.name == path.sep){
   }else{
     name.name = path.resolve(name.name)
   }
@@ -328,7 +330,18 @@ function parse (name,type = '') {
 }
 
 function defaultEquals (a, b, cb) {
-  if (!a.stat.isDirectory() && (a.stat.size !== b.stat.size)) return cb(null, false)
-  if (a.stat.mtime.getTime() > b.stat.mtime.getTime()) return cb(null, false)
-  cb(null, true)
+  if (!a.stat.isDirectory() && (a.stat.size !== b.stat.size)){
+    return cb(null, false)
+  }
+
+  // console.log('2',a.stat.mtime.getTime(),b.stat.mtime.getTime(),a.stat.mtime.getTime()>b.stat.mtime.getTime(),a,b);
+  // if (a.stat.mtime.getTime() > b.stat.mtime.getTime()){
+  //   return cb(null, false)
+  // }
+  if (a.stat.ctimeMs > b.stat.ctimeMs){
+    return cb(null, false)
+  }
+  
+
+  return cb(null, true)
 }
